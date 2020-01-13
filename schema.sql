@@ -1,3 +1,9 @@
+create table owners (
+    id serial primary key,
+    name text,
+    phone_number varchar(20)
+);
+
 create table pets (
     id serial primary key,
     name text,
@@ -12,9 +18,9 @@ create table pets (
 
 );
 
-
-create table owners (
-    id serial primary key,
-    name text,
-    phone_number varchar(20)
+-- many-to-many references get a third linking table
+-- this table does not need an ID
+create table owners_pets (
+        owner_id INTEGER REFERENCES owners(id),
+        pet_id INTEGER REFERENCES pets(id)
 );
