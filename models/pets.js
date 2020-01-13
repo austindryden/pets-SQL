@@ -1,7 +1,16 @@
 const db = require('./connection');
 
 //create
-function create(){}
+async function create(name, species, dateObj, owner_id){
+    const birthdate = birthdateConverter(dateObj);
+    const result = await db.result(`
+        insert into pets
+            (name, species, birthdate, owner_id)
+        values
+            ($1, $2, $3, $4)
+        `, [name, species, birthdate, owner_id]);
+    return result;
+}
 
 //retrieve
 async function one(id){
@@ -31,16 +40,64 @@ async function all(){
 }
 
 //update
-function update(){}
+async function updateName(id, name){
+    const result = await db.result(`
+        update pets set
+            name=$1
+        where id=$2;
+    `, [name, id]);
+    console.log(result);
+    if (result.rowCount === 1){
+        return id;
+    } else {
+        return null;
+    }
+}
+
+async function updateBirthdate(id, dateObj){
+    const dateString = birthdateConverter(dateObj);
+    const result = await db.result(`
+        update pets set
+            birthdate=$1
+        where id=$2
+        `,[dateString, id]);
+    if (result.rowCount === 1){
+        return id;
+    } else {
+        return null;
+    }
+}
+
+function birthdateConverter(dateObj){
+    const year = dateObj.getFullYear();
+    let month = dateObj.getMonth() + 1;
+    if(month < 10){
+        month = `0${month}`;
+    }
+    let day = dateObj.getDate();
+    if(day < 10){
+        day = `0${day}`;
+    }
+    return `${year}-${month}-${day}`;
+}
 
 //delete
-function del(){}
+async function del(id){
+    const result = await db.result(`delete from pets where id=$1`, [id]);
+    console.log(result);
+    if (result.rowCount === 1){
+            return id;
+    } else {
+        return null;
+    }
+}
 
 
 module.exports = {
     create,
     one,
     all,
-    update,
+    updateName,
+    updateBirthdate,
     del
 }
