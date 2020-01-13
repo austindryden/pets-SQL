@@ -20,7 +20,7 @@ create table pets (
 
 -- many-to-many references get a third linking table
 -- this table does not need an ID
-create table owners_pets (
-        owner_id INTEGER REFERENCES owners(id),
-        pet_id INTEGER REFERENCES pets(id)
-);
+-- create table owners_pets (
+--         owner_id INTEGER REFERENCES owners(id),
+--         pet_id INTEGER REFERENCES pets(id)
+-- );o

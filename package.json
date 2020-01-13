@@ -4,6 +4,10 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "db:delete": "dropdb pets-owners",
+    "db:create": "createdb pets-owners",
+    "db:schema": "psql -f schema.sql pets-owners",
+    "db:seed": "psql -f seed.sql pets-owners",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -11,5 +15,8 @@
   "license": "ISC",
   "devDependencies": {
     "nodemon": "^2.0.2"
+  },
+  "dependencies": {
+    "pg-promise": "^10.3.5"
   }
 }
