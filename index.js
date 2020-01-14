@@ -47,22 +47,33 @@ app.get(`/pets`, async (req, res) => {
         res.json(thePets);
 });
 
+function requireLogin(req, res, next){
+    if (req.session && req.session.user){
+        console.log("requireLogin dectects user logged in");
+        next();
+    } else {
+        console.log("nobody logged in!");
+        res.redirect('/login');
+    }
+}
+
 // Create
-app.get('/pets/create',(req, res)=>{
+app.get('/pets/create', requireLogin, (req, res)=>{
     console.log("hey heres /pets/create!!!");
     res.render('create');
     //some HTML form goes her
 });
 
-app.post('/pets/create', parseForm, async (req, res) => {
-    const { name, species, owner_id } = req.body;
+app.post('/pets/create', requireLogin, parseForm, async (req, res) => {
+    const { name, species } = req.body;
+    const owner_id = req.session.user.id;
     const id = await pets.create(name, species, new Date(), owner_id);
     console.log(id);
     res.redirect(`/pets/${id}`);
 });
 
 // Update
-app.get('/pets/:id/edit', async (req, res)=>{
+app.get('/pets/:id/edit', requireLogin, async (req, res)=>{
     let petName = await pets.one(req.params.id);
     // console.log("petName stufff");
     // console.log(petName);
@@ -76,7 +87,7 @@ app.get('/pets/:id/edit', async (req, res)=>{
     },);
 });
 
-app.post('/pets/:id/edit', parseForm, async (req, res) => {
+app.post('/pets/:id/edit', requireLogin, parseForm, async (req, res) => {
     const newName = req.body.name;
     console.log("before updateName");
     let result = await pets.updateName(req.params.id, newName);
