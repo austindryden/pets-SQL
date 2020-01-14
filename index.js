@@ -1,22 +1,40 @@
 const http = require('http');
 const express = require('express');
 const app = express();
-const PORT = 3000;
 const server = http.createServer(app);
-const pets = require('./models/pets');
-const owners = require(`./models/owners`);
+const PORT = 3000;
+
+const session = require('express-session');
+const fileStore = require('session-file-store')(session);
+app.use(session({
+        sote: new fileStore({}),
+        secret: 'sljsls'
+}));
+
+app.use((req, res, next) =>{
+    console.log('*****************');
+    console.log(req.session);
+    console.log('*****************');
+    next();
+});
+
 const morgan = require("morgan");
 const logger = morgan("tiny");
 app.use(logger);
 const helmet = require("helmet");
 app.use(helmet());
+
 const es6renderer = require('express-es6-template-engine');
 app.engine('html', es6renderer);
 app.set("views", 'templates');
 app.set("view engine", 'html');
 app.use(express.static("public"));
+
 const bodyParser = require('body-parser');
 const parseForm = bodyParser.urlencoded({extended:true});
+
+const pets = require('./models/pets');
+const owners = require(`./models/owners`);
 
 app.get("/", (req, res) =>{
     res.send("heres the pet db page");
@@ -109,24 +127,3 @@ app.post('/login', parseForm, async (req, res)=>{
 server.listen(PORT, ()=>{
     console.log(`listening on port ${PORT}`)
 });
-
-
-
-
-// const pets = require('./models/pets');
-
-
-// async function main() {
-//     const thePets = await pets.all();
-//     console.log(thePets);
-//     const aPet = await pets.one(1);
-//     console.log(aPet);
-//     // await pets.updateName(1, 'the amazing oakley');
-//     // const result = await pets.updateBirthdate(1, new Date());
-//     // console.log(result);
-//     const createResult = await pets.create('billy', 'goat', new Date(), 1);
-//     console.log(createResult);
-// }
-
-
-// main();
