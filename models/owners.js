@@ -10,15 +10,19 @@ function create(username, password){
     const hash = createHash(password);
 }
 
-function login(username, password){
-    const theUser = getUser(username);
+async function login(username, password){
+    const theUser = await getByUsername(username);
     return bcrypt.compareSync(password, theUser.hash);
-
 }
 
-function getByUsername(username){}
+async function getByUsername(username){
+    const theUser = await db.one(`
+        select * from owners where name=$1;`, [username]);
+    return theUser;
+}
 
 module.exports = {
     create,
-    login
+    login,
+    getByUsername
 };

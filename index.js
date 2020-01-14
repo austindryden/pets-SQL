@@ -4,6 +4,7 @@ const app = express();
 const PORT = 3000;
 const server = http.createServer(app);
 const pets = require('./models/pets');
+const owners = require(`./models/owners`);
 const morgan = require("morgan");
 const logger = morgan("tiny");
 app.use(logger);
@@ -16,7 +17,6 @@ app.set("view engine", 'html');
 app.use(express.static("public"));
 const bodyParser = require('body-parser');
 const parseForm = bodyParser.urlencoded({extended:true});
-
 
 app.get("/", (req, res) =>{
     res.send("heres the pet db page");
@@ -88,6 +88,22 @@ app.post('/pets/:id/delete', parseForm, async (req, res)=>{
 app.get('/pets/:id', async (req, res) =>{
     const pet = await pets.one(req.params.id);
     res.json(pet);
+});
+
+app.get('/login', (req, res) =>{
+    res.render("auth");
+});
+
+app.post('/login', parseForm, async (req, res)=>{
+    console.log("here you did it!");
+    console.log(req.body);
+    const { name, password } = req.body;
+    const didLoginSuccessfully = await owners.login(name, password);
+    if (didLoginSuccessfully){
+        console.log("success!");
+    }else{
+        console.log("FAILLLL!!!!");
+    }
 });
 
 server.listen(PORT, ()=>{
