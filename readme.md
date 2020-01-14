@@ -21,14 +21,3 @@ touch seed.sql
 - conseptually, what is a linking table? (manoy-to-many)
 
 Ultimately, the goal is to res.render
-
-
-
-
-
-
-
-
-untappd, for coffee.
-
-cups(tasting notes), shop brewed(method brewed), retail coffee(roaster, roast date, origin), roaster(location), green coffee(country of origin, varietal, processing type), users,
