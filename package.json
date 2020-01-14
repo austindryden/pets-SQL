@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "dev": "nodemon --ignore './sessions/' index.js",
     "db:delete": "dropdb pets-owners",
     "db:create": "createdb pets-owners",
     "db:schema": "psql -f schema.sql pets-owners",

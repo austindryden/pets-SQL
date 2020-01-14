@@ -119,9 +119,30 @@ app.post('/login', parseForm, async (req, res)=>{
     const didLoginSuccessfully = await owners.login(name, password);
     if (didLoginSuccessfully){
         console.log("success!");
+        const theUser = await owners.getByUsername(name);
+        req.session.user = {
+            name,
+            id:theUser.id
+        };
+        req.session.save(()=>{
+            console.log("session has been saveds");
+            res.redirect('/profile');
+        });
+        
     }else{
         console.log("FAILLLL!!!!");
     }
+});
+
+app.get('/logout', (req,res)=>{
+    req.session.destroy(()=> {
+        res.redirect('/login');
+    });
+    
+});
+
+app.get('/profile', (req, res) => {
+    res.send(`Welcome back ${req.session.user.name}`)
 });
 
 server.listen(PORT, ()=>{
